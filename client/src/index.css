@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* We're now using direct hex values in the tailwind.config.ts */
+  /* These variables are kept for compatibility with components that still use them */
+  
+  --background: 0 0% 100%; /* White background */
+  --foreground: 0 0% 0%;  /* Black text */
+
+  --border: 147 19% 38%; /* 52796F - Dark Sage */
+  --input: 147 19% 38%; /* 52796F - Dark Sage */
+  --ring: 0 0% 0%;
+
+  --primary: 144 14% 59%; /* Fallback - 84A98C */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 147 19% 38%; /* Fallback - 52796F */
+  --secondary-foreground: 0 0% 100%;
+  
+  --accent: 165 21% 27%; /* Fallback - 354F52 */
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 70% 55%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --muted: 129 13% 90%; /* Fallback - CAD2C5 */
+  --muted-foreground: 193 20% 23%; /* Fallback - 2F3E46 */
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 193 20% 23%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 193 20% 23%;
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Dark mode also uses direct hex values in the tailwind.config.ts */
+  /* These variables are kept for compatibility */
+  
+  --background: 0 0% 15%;
+  --foreground: 0 0% 95%;
+
+  --border: 147 19% 38%; /* 52796F - Dark Sage */
+  --input: 147 19% 38%; /* 52796F - Dark Sage */
+  --ring: 0 0% 100%;
+
+  --popover: 0 0% 15%;
+  --popover-foreground: 0 0% 95%;
+
+  --card: 0 0% 15%;
+  --card-foreground: 0 0% 95%;
+}
+
+@layer base {
+  * {
+    @apply border-input;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-foreground;
+  }
+
+  a {
+    @apply text-primary hover:text-primary/80 transition-colors duration-200;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-md
+           font-semibold text-sm tracking-wide
+           transition-all duration-300 ease-in-out
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary text-primary-foreground shadow-md
+           hover:bg-primary/90 hover:shadow-lg
+           transform hover:scale-[1.02];
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary text-secondary-foreground shadow-sm
+           hover:bg-secondary/80 hover:shadow-md;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-primary text-primary bg-transparent
+           hover:bg-primary/10 hover:text-primary/90
+           shadow-none;
+  }
+
+  .btn-ghost {
+    @apply btn text-primary hover:bg-primary/10 shadow-none;
+  }
+
+  .card {
+    @apply bg-card text-card-foreground rounded-lg shadow-lg overflow-hidden;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-300
+           hover:shadow-xl hover:border-primary/30 hover:scale-[1.01];
+  }
+
+  .input-field {
+    @apply block w-full px-4 py-3 rounded-md bg-background border border-input
+           text-foreground placeholder-muted-foreground
+           focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+           transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  /* Animations defined in tailwind.config.ts will generate utilities like .animate-fade-in */
+  /* Utility for a subtle background gradient - can be applied to body or sections */
+  .bg-gradient-subtle {
+    @apply bg-gradient-to-br from-background via-muted/50 to-background;
+  }
+
+  /* Utility for frosted glass effect (use with backdrop-blur if supported/desired) */
+  .frosted-glass {
+    @apply bg-card/70 backdrop-blur-md border border-white/20;
+  }
+}
+
+/* Custom keyframes are now defined in tailwind.config.ts */
+/* @keyframes fadeIn { ... } */
+/* @keyframes slideUp { ... } */
+/* @keyframes pulseScale { ... } */
