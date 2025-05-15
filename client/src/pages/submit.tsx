@@ -9,50 +9,52 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { insertSpruchSchema } from "@shared/schema";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ArrowLeft, Send, Sparkles } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-// Create schema with validation based on the fields we need
-const extendedSpruchSchema = z.object({
-  text: z.string().min(5, {
+const formSchema = z.object({
+  content: z.string().min(5, {
     message: "Der Spruch muss mindestens 5 Zeichen lang sein",
   }),
-  eingereicht_von: z.string().optional().nullable(),
+  author: z.string().optional(),
+  dialect: z.string().default('standard'),
+  region: z.string().optional(),
 });
 
-type FormValues = z.infer<typeof extendedSpruchSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
 export default function SubmitPage() {
   const [, navigate] = useLocation();
   
-  // Form with validation
   const form = useForm<FormValues>({
-    resolver: zodResolver(extendedSpruchSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      text: "",
-      eingereicht_von: "",
+      content: "",
+      author: "",
+      dialect: "standard",
+      region: "",
     },
   });
 
-  // Mutation for submitting a new Spruch
   const submitMutation = useMutation({
     mutationFn: async (data: FormValues) => {
-      return await apiRequest("POST", "/api/spruch/submit", data);
+      const { error } = await supabase
+        .from('schnupfsprueche')
+        .insert([{
+          content: data.content,
+          author: data.author || 'Anonym',
+          dialect: data.dialect,
+          region: data.region || null,
+        }]);
+
+      if (error) throw error;
     },
     onSuccess: () => {
-      // Redirect to home page with success flag
       navigate("/?success=true");
     },
   });
 
-  // Handle form submission
-  const onSubmit = (data: FormValues) => {
-    submitMutation.mutate(data);
-  };
-
-  // Navigate back to home
   const goToHome = () => {
     navigate("/");
   };
@@ -79,48 +81,44 @@ export default function SubmitPage() {
           <div className="flex items-center justify-center gap-2 mb-8 bg-sage-light p-3 rounded-lg">
             <Sparkles size={18} className="text-sage-dark" />
             <p className="text-foreground/80 text-sm">
-              Teile deinen Spruch mit der Community. Nach kurzer Prüfung wird er veröffentlicht.
+              Teile deinen Spruch mit der Community
             </p>
           </div>
           
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit((data) => submitMutation.mutate(data))} className="space-y-6">
               <FormField
                 control={form.control}
-                name="text"
+                name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium text-foreground">Dein Schnupfspruch</FormLabel>
+                    <FormLabel className="font-medium text-sage-forest">Dein Schnupfspruch</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Gib hier deinen Schnupfspruch ein..." 
-                        className="min-h-[120px] border-input focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg resize-none" 
+                        className="min-h-[120px] border-sage-dark focus:border-sage-medium focus:ring-2 focus:ring-sage-medium/20 rounded-lg resize-none" 
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage className="text-primary" />
+                    <FormMessage className="text-sage-forest" />
                   </FormItem>
                 )}
               />
               
               <FormField
                 control={form.control}
-                name="eingereicht_von"
+                name="author"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium text-foreground">Dein Name (optional)</FormLabel>
+                    <FormLabel className="font-medium text-sage-forest">Dein Name (optional)</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="Wie sollen wir dich nennen?" 
-                        className="border-input focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-lg" 
-                        value={field.value || ""} 
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        name={field.name}
-                        ref={field.ref}
+                        className="border-sage-dark focus:border-sage-medium focus:ring-2 focus:ring-sage-medium/20 rounded-lg" 
+                        {...field} 
                       />
                     </FormControl>
-                    <FormMessage className="text-primary" />
+                    <FormMessage className="text-sage-forest" />
                   </FormItem>
                 )}
               />
@@ -132,11 +130,8 @@ export default function SubmitPage() {
                   disabled={submitMutation.isPending}
                 >
                   {submitMutation.isPending ? (
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
+                    <span className="flex items-center gap-2">
+                      <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
                       Wird eingereicht...
                     </span>
                   ) : (
