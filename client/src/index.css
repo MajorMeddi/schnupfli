@@ -22,7 +22,7 @@
   --accent: 165 21% 27%; /* Fallback - 354F52 */
   --accent-foreground: 0 0% 100%;
   
-  --destructive: 0 70% 55%;
+  --destructive: 147 19% 38%;
   --destructive-foreground: 0 0% 100%;
   
   --muted: 129 13% 90%; /* Fallback - CAD2C5 */
@@ -70,7 +70,7 @@
   }
 
   a {
-    @apply text-primary hover:text-primary/80 transition-colors duration-200;
+    @apply text-sage-medium hover:text-sage-dark transition-colors duration-200;
   }
 
   :focus-visible {
@@ -87,57 +87,49 @@
   }
 
   .btn-primary {
-    @apply btn bg-primary text-primary-foreground shadow-md
-           hover:bg-primary/90 hover:shadow-lg
+    @apply btn bg-sage-medium text-white shadow-md
+           hover:bg-sage-dark hover:shadow-lg
            transform hover:scale-[1.02];
   }
 
   .btn-secondary {
-    @apply btn bg-secondary text-secondary-foreground shadow-sm
-           hover:bg-secondary/80 hover:shadow-md;
+    @apply btn bg-sage-dark text-white shadow-sm
+           hover:bg-sage-forest hover:shadow-md;
   }
 
   .btn-outline {
-    @apply btn border-2 border-primary text-primary bg-transparent
-           hover:bg-primary/10 hover:text-primary/90
+    @apply btn border-2 border-sage-medium text-sage-medium bg-transparent
+           hover:bg-sage-light hover:text-sage-dark
            shadow-none;
   }
 
   .btn-ghost {
-    @apply btn text-primary hover:bg-primary/10 shadow-none;
+    @apply btn text-sage-medium hover:bg-sage-light shadow-none;
   }
 
   .card {
-    @apply bg-card text-card-foreground rounded-lg shadow-lg overflow-hidden;
+    @apply bg-white text-foreground rounded-lg shadow-lg overflow-hidden;
   }
 
   .card-hover {
     @apply card transition-all duration-300
-           hover:shadow-xl hover:border-primary/30 hover:scale-[1.01];
+           hover:shadow-xl hover:border-sage-medium/30 hover:scale-[1.01];
   }
 
   .input-field {
-    @apply block w-full px-4 py-3 rounded-md bg-background border border-input
-           text-foreground placeholder-muted-foreground
-           focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
+    @apply block w-full px-4 py-3 rounded-md bg-background border border-sage-dark
+           text-foreground placeholder-sage-forest/60
+           focus:outline-none focus:ring-2 focus:ring-sage-medium focus:border-transparent
            transition-colors duration-200;
   }
 }
 
 @layer utilities {
-  /* Animations defined in tailwind.config.ts will generate utilities like .animate-fade-in */
-  /* Utility for a subtle background gradient - can be applied to body or sections */
   .bg-gradient-subtle {
-    @apply bg-gradient-to-br from-background via-muted/50 to-background;
+    @apply bg-gradient-to-br from-background via-sage-light/50 to-background;
   }
 
-  /* Utility for frosted glass effect (use with backdrop-blur if supported/desired) */
   .frosted-glass {
-    @apply bg-card/70 backdrop-blur-md border border-white/20;
+    @apply bg-white/70 backdrop-blur-md border border-sage-light/20;
   }
 }
-
-/* Custom keyframes are now defined in tailwind.config.ts */
-/* @keyframes fadeIn { ... } */
-/* @keyframes slideUp { ... } */
-/* @keyframes pulseScale { ... } */
